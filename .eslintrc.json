@@ -16,6 +16,7 @@
     "no-undef": "off",
     "class-methods-use-this": "off",
     "prefer-destructuring": ["error", { "object": true, "array": false }],
-    "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val|err" }]
+    // "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val|err" }]
+    "no-unused-vars": "off"
   }
 }
