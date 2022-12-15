@@ -1,4 +1,4 @@
-const sendErrorDev = (dev, res) => {
+const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
@@ -7,7 +7,7 @@ const sendErrorDev = (dev, res) => {
   });
 };
 
-const sendErrorProd = (dev, res) => {
+const sendErrorProd = (err, res) => {
   // Operational, trusted error: send message to client
   if (err.isOperational) {
     res.status(err.statusCode).json({
@@ -32,9 +32,9 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  if (process.env.NODE_ENV === 'developmnet') {
+  if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
-  } else if (procces.env.NODE_ENV === 'production') {
+  } else if (process.env.NODE_ENV === 'production') {
     sendErrorProd(dev, res);
   }
 };
