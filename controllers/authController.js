@@ -108,3 +108,22 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+exports.forgotPassword = catchAsyncError(async (req, res, next) => {
+  // 1) Get user based on POSTed email
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new AppError('There is no user with that email address', 404));
+  }
+
+  // 2) Generate the radnom reset token
+  const resetToken = user.createPasswordResetToken();
+
+  //// We need to save changes from our createPasswordResetToken() method
+  //// validationBeforeSave will deactivate all the validators that we specified in our schema
+  await user.save({ validateBeforeSave: false });
+
+  // 3) Send it to user's mail
+});
+
+exports.resetPassword = (req, res, next) => {};
