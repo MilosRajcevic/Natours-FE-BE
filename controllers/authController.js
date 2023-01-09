@@ -17,6 +17,7 @@ exports.signup = catchAsyncError(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
+    role: req.body.role,
   });
 
   const token = signToken(newUser._id);
@@ -90,6 +91,20 @@ exports.protect = catchAsyncError(async (req, res, next) => {
   }
 
   // GRANT ACCESS TO PROTECTED ROUTE
-  req.user = freshUser;
+  req.user = currentUser;
   next();
 });
+
+// Restrict access to some operation
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles ['admin', 'lead-guide']. role = 'user'
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to preform this action', 403)
+      );
+    }
+
+    next();
+  };
+};
