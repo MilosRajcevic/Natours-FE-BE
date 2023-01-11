@@ -44,9 +44,23 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 // Mongoose documentation middleware
+
+// Query middleware
+// We dont want to show users which have prop active:false, /^find/ means that we want to happened on all find methods findOne, findById before action find
+userSchema.pre(/^find/, function (next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } });
+  next();
+});
+
 userSchema.pre('save', async function (next) {
   // Only run this function is password was actually modified
   if (!this.isModified('password')) return next();
@@ -68,6 +82,7 @@ userSchema.pre('save', function (next) {
   next();
 });
 
+// Instance methods
 // Instance method - available method on all documents
 userSchema.methods.correctPassword = async function (
   candidatePasswrod,
