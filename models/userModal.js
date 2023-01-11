@@ -60,6 +60,14 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+  // There we need to subtract one second becase we can have problem whit saving token, sometimes token has been saved before passwordChangedAt is updated,
+  // so this is a small hack to prevent that problem in protect funciton.
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
 // Instance method - available method on all documents
 userSchema.methods.correctPassword = async function (
   candidatePasswrod,
