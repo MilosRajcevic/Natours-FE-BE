@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    require: [true, 'Please provide your email'],
+    required: [true, 'Please provide your email'],
     unique: true,
     lowercasse: true,
     validate: [validator.isEmail, 'Please provide valid email'],
@@ -26,13 +26,13 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    require: [true, 'Please provide a password'],
+    required: [true, 'Please provide a password'],
     minLength: 8,
     select: false,
   },
   passwordConfirm: {
     type: String,
-    require: [true, 'Please confirm your password'],
+    required: [true, 'Please confirm your password'],
     validate: {
       // This only works on CREATE and SAVE!!! // When we want to update user passwrod this validation doesnt work
       validator: function (el) {
