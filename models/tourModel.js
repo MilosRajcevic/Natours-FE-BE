@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const validator = require('validator');
-const User = require('./userModal');
+// Needed for embedding
+// const User = require('./userModal');
 
 const toursSchema = new mongoose.Schema(
   {
@@ -107,8 +108,10 @@ const toursSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-    // Embedding - add all guides related for this tour based on user ID
-    guides: Array,
+    // // Embedding - add all guides related for this tour based on user ID
+    // guides: Array,
+    // Referencing - ref:conection between two models
+    guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
   },
   {
     toJSON: { virtuals: true },
@@ -125,12 +128,13 @@ toursSchema.pre('save', function (next) {
   next();
 });
 
-toursSchema.pre('save', async function (next) {
-  const guidesPromises = this.guides.map(async (id) => await User.findById(id));
-  // Beacuse it's async function it will retrurn promises, so we need to convert promise in object
-  this.guides = await Promise.all(guidesPromises);
-  next();
-});
+// Embedding
+// toursSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+//   // Beacuse it's async function it will retrurn promises, so we need to convert promise in object
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 
 // eslint-disable-next-line prefer-arrow-callback
 // toursSchema.pre('save', function (next) {
@@ -155,6 +159,16 @@ toursSchema.pre(/^find/, function (next) {
 
 toursSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start}, milliseconds`);
+  next();
+});
+
+// If want to popuplate all our documents, create like query midl
+toursSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    // remove fields
+    select: '-__v -passwordChangedAt',
+  });
   next();
 });
 

@@ -31,6 +31,13 @@ exports.getAllTours = catchAsyncError(async (req, res, next) => {
 });
 
 exports.getTour = catchAsyncError(async (req, res, next) => {
+  // Populate is fundamental toll for working with data in Mongoose
+  // If we just want to populate on request, else do like query (check tourModel file)
+  // const tour = await Tour.findById(req.params.id).populate({
+  //   path: 'guides',
+  //   // remove fields
+  //   select: '-__v -passwordChangedAt',
+  // });
   const tour = await Tour.findById(req.params.id);
 
   if (!tour) {
