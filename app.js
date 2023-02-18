@@ -10,6 +10,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const usersRouter = require('./routes/userRoutes');
+const reviewsRouter = require('./routes/reviewRoutes');
 
 const app = express();
 
@@ -65,6 +66,7 @@ app.use((req, res, next) => {
 // 2) ROUTES
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/reviews', reviewsRouter);
 
 // 3) ERROR HANDLERS
 app.all('*', (req, res, next) => {
