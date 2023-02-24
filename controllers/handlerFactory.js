@@ -14,3 +14,21 @@ exports.deleteOne = (Model) =>
       data: null,
     });
   });
+
+exports.updateOne = (Model) =>
+  catchAsyncError(async (req, res, next) => {
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      // runValidators check our types in schema, so we can not set string where is typed number!
+      runValidators: true,
+    });
+
+    if (!doc) {
+      return next(new AppError('No documet found with that ID'), 404);
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: { data: doc },
+    });
+  });
