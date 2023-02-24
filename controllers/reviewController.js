@@ -6,7 +6,10 @@ const AppError = require('../utils/appError');
 // 2) Creating new reviews
 
 exports.getAllReviews = catchAsyncError(async (req, res, next) => {
-  const reviews = await Review.find();
+  let filter = {};
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+
+  const reviews = await Review.find(filter);
 
   res.status(200).json({
     status: 'success',
@@ -29,6 +32,10 @@ exports.getReview = catchAsyncError(async (req, res, next) => {
 });
 
 exports.createReview = catchAsyncError(async (req, res, next) => {
+  // Allow nested routes
+  if (!req.body.tour) req.body.tour = req.params.tourId;
+  if (!req.body.user) req.body.user = req.user.id;
+
   const newReview = await Review.create({
     review: req.body.review,
     rating: req.body.rating,
