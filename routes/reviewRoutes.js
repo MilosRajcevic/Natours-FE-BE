@@ -9,11 +9,12 @@ const router = express.Router({ mergeParams: true });
 // GET /tour/2313fasa/reviews
 // GET /tour/2313fasa/reviews/32141214fs
 
+router.use(authController.protect);
+
 router
   .route('/')
   .get(reviewControler.getAllReviews)
   .post(
-    authController.protect,
     authController.restrictTo('user'),
     reviewControler.setTourUserIds,
     reviewControler.createReview
@@ -21,8 +22,14 @@ router
 
 router
   .route('/:id')
-  .delete(reviewControler.deleteReview)
+  .delete(
+    authController.restrictTo('user', 'admin'),
+    reviewControler.deleteReview
+  )
   .get(reviewControler.getReview)
-  .patch(reviewControler.updateReview);
+  .patch(
+    authController.restrictTo('user', 'admin'),
+    reviewControler.updateReview
+  );
 
 module.exports = router;
