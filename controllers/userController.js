@@ -1,4 +1,4 @@
-const User = require('../models/userModal');
+const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsyncError = require('../utils/catchAsyncError');
 const factory = require('./handlerFactory');
