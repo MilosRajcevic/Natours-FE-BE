@@ -32,3 +32,16 @@ exports.updateOne = (Model) =>
       data: { data: doc },
     });
   });
+
+exports.createOne = (Model) =>
+  catchAsyncError(async (req, res, next) => {
+    // This is the same like Tour.create();
+    // const newTour = new Tour({});
+    // newTour.save();
+    const doc = await Model.create(req.body);
+
+    res.status(200).json({
+      status: 'success',
+      data: { data: doc },
+    });
+  });

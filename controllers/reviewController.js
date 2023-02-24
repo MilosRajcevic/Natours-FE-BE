@@ -32,25 +32,16 @@ exports.getReview = catchAsyncError(async (req, res, next) => {
   });
 });
 
-exports.createReview = catchAsyncError(async (req, res, next) => {
+// Create this middleware function and call it before create review to set tour & user ids
+// because this par is neccessary in creating review but we can not use it directly in factory function
+exports.setTourUserIds = (req, res, next) => {
   // Allow nested routes
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
+  next();
+};
 
-  const newReview = await Review.create({
-    review: req.body.review,
-    rating: req.body.rating,
-    tour: req.body.tour,
-    user: req.body.user,
-  });
-
-  res.status(200).json({
-    status: 'succes',
-    data: {
-      review: newReview,
-    },
-  });
-});
+exports.createReview = factory.createOne(Review);
 
 exports.updateReview = factory.updateOne(Review);
 
