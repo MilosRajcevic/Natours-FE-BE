@@ -9,7 +9,7 @@ router
   .get(reviewControler.getAllReviews)
   .post(
     authController.protect,
-    authController.restrictTo('users'),
+    authController.restrictTo('user'),
     reviewControler.createReview
   );
 

@@ -122,6 +122,13 @@ toursSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+// Virtual populate
+toursSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'tour',
+});
+
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() // That mean this will not work for cases where we want to UPDATE/PATCH object
 toursSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });

@@ -26,9 +26,13 @@ const reviewSchema = new mongoose.Schema(
 
 // QUERY MIDDLEWARE
 reviewSchema.pre(/^find/, function (next) {
-  this.populate({ path: 'tour', select: 'name -_id' }).populate({
+  // this.populate({ path: 'tour', select: 'name _id' }).populate({
+  //   path: 'user',
+  //   select: 'name _id',
+  // });
+  this.populate({
     path: 'user',
-    select: 'name -_id',
+    select: 'name _id',
   });
   next();
 });
