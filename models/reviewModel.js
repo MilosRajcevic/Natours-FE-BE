@@ -55,16 +55,37 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
   ]);
 
-  // Update stats in Tour Model
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsAverage: stats[0].nRating,
-    ratingsQuantity: stats[0].averageRating,
-  });
+  if (stats.length > 0) {
+    // Update stats in Tour Model
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].averageRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 0,
+    });
+  }
 };
 
 reviewSchema.post('save', function () {
   // this.constructor because this is what points to the current model.
   this.constructor.calcAverageRatings(this.tour);
+});
+
+// So basically, the trick of going around that in a query midddleware, we only have access to the query.
+// So again, we need to get access to the document, and so we basically execute this query by using findOne.
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  // Passing the data from the pre-middleware to the post middleware, and so then here
+  // we retrieved the review document from this variable.
+  this.r = await this.clone().findOne();
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  // await this.findOne(); does NOT work here, query was already executed
+  await this.r.constructor.calcAverageRatings(this.r.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);
