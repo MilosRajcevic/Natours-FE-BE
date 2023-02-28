@@ -92,7 +92,7 @@ const toursSchema = new mongoose.Schema(
         default: 'Point',
         enum: ['Point'],
       },
-      cordinates: [Number],
+      coordinates: [Number],
       address: String,
       description: String,
     },
@@ -103,7 +103,7 @@ const toursSchema = new mongoose.Schema(
           default: 'Point',
           enum: ['Point'],
         },
-        cordinates: [Number],
+        coordinates: [Number],
         address: String,
         description: String,
         day: Number,
@@ -122,6 +122,7 @@ const toursSchema = new mongoose.Schema(
 // toursSchema.index({ price: 1 });
 toursSchema.index({ price: 1, ratingsAverage: -1 });
 toursSchema.index({ slug: 1 });
+toursSchema.index({ startLocation: '2dsphere' });
 
 toursSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
@@ -185,10 +186,10 @@ toursSchema.pre(/^find/, function (next) {
 });
 
 // AGGREGATION MIDDLEWARE
-toursSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  next();
-});
+// toursSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', toursSchema);
 
