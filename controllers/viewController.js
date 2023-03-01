@@ -1,9 +1,17 @@
-exports.getOverview = (req, res) => {
-  res.status(200).render('base', {
+const Tour = require('../models/tourModel');
+const catchAsyncError = require('../utils/catchAsyncError');
+
+exports.getOverview = catchAsyncError(async (req, res, next) => {
+  // 1) Get tour data from collection
+  const tours = await Tour.find();
+
+  // 2) Build template
+  // 3) Render that template using tour data from 1)
+  res.status(200).render('overview', {
     tour: 'The Forest Hiker',
-    user: 'Milos',
+    tours,
   });
-};
+});
 
 exports.getTour = (req, res) => {
   res.status(200).render('tour', {
