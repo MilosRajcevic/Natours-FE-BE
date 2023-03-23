@@ -1,2 +1,6 @@
 node_modules
 config.env
+bundle.css
+bundle.css.map
+bundle.js
+bundle.js.map
