@@ -22,9 +22,7 @@ const createSendToken = (user, statusCode, res) => {
   };
 
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // Indicates if the cookie should be signed. It only works on HTTPS
-
   res.cookie('jwt', token, cookieOptions);
-
   // Remove password from output
   user.password = undefined;
 
@@ -65,7 +63,6 @@ exports.login = catchAsyncError(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrcet email or password', 401));
   }
-
   // 3) If everything ok, send token to client
   createSendToken(user, 200, res);
 });
@@ -78,6 +75,8 @@ exports.protect = catchAsyncError(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {
