@@ -15,7 +15,7 @@ exports.getOverview = catchAsyncError(async (req, res, next) => {
   });
 });
 
-exports.getTour = catchAsyncError(async (req, res) => {
+exports.getTour = catchAsyncError(async (req, res, next) => {
   // 1) Get the data, for the requested tour ( including reviews and guides )
   const tour = await Tour.findOne({ slug: req.params.slug })
     .populate({
@@ -29,4 +29,16 @@ exports.getTour = catchAsyncError(async (req, res) => {
     title: `${tour.name}`,
     tour,
   });
+});
+
+exports.getLoginForm = catchAsyncError(async (req, res, next) => {
+  res
+    .status(200)
+    .set(
+      'Content-Security-Policy',
+      "script-src 'self' https://cdnjs.cloudflare.com"
+    )
+    .render('login', {
+      title: 'Login',
+    });
 });
