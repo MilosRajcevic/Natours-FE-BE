@@ -53,3 +53,22 @@ exports.getAccount = (req, res) => {
     title: 'Your account',
   });
 };
+
+exports.updateUserData = catchAsyncError(async (req, res, next) => {
+  // !!! Important to include app.use(express.urlencoded(...)) in app.js to allow us to collect data from forms
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(200).render('account', {
+    title: 'Your account',
+    user: updatedUser,
+  });
+});
