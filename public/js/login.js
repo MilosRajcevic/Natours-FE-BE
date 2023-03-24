@@ -32,7 +32,10 @@ export const logout = async () => {
       url: 'http://127.0.0.1:3000/api/v1/users/logout',
     });
     // We need to do location.reload(true), because we want to reaload page without cash
-    if (res.data.status === 'success') location.reload(true);
+    if (res.data.status === 'success') {
+      location.reload(true);
+      location.assign('/');
+    }
   } catch (error) {
     console.log(error.response);
     showAlert('error', 'Error logging out! Try again.');
