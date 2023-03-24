@@ -54,21 +54,22 @@ exports.getAccount = (req, res) => {
   });
 };
 
-exports.updateUserData = catchAsyncError(async (req, res, next) => {
-  // !!! Important to include app.use(express.urlencoded(...)) in app.js to allow us to collect data from forms
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user.id,
-    {
-      name: req.body.name,
-      email: req.body.email,
-    },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-  res.status(200).render('account', {
-    title: 'Your account',
-    user: updatedUser,
-  });
-});
+// UPDATE USER DATA WITHOUT API: (implemented in account.pug)
+// exports.updateUserData = catchAsyncError(async (req, res, next) => {
+//   // !!! Important to include app.use(express.urlencoded(...)) in app.js to allow us to collect data from forms
+//   const updatedUser = await User.findByIdAndUpdate(
+//     req.user.id,
+//     {
+//       name: req.body.name,
+//       email: req.body.email,
+//     },
+//     {
+//       new: true,
+//       runValidators: true,
+//     }
+//   );
+//   res.status(200).render('account', {
+//     title: 'Your account',
+//     user: updatedUser,
+//   });
+// });
