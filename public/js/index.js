@@ -10,6 +10,7 @@ const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-settings');
 const userPhoto = document.querySelector('.js-user-photo');
+const inputUserPhoto = document.querySelector('.js-input-user-photo');
 
 // DELEGATION
 if (mapBox) {
@@ -39,6 +40,21 @@ if (userDataForm) {
     formData.append('photo', document.getElementById('photo').files[0]);
 
     updateSettings(formData, 'data');
+  });
+}
+
+if (inputUserPhoto) {
+  inputUserPhoto.addEventListener('change', (e) => {
+    const imgFile = e.target.files?.[0];
+
+    if (!imgFile?.type.startsWith('image/')) return;
+    const reader = new FileReader();
+
+    reader.addEventListener('load', () => {
+      userPhoto.setAttribute('src', reader.result);
+    });
+
+    reader.readAsDataURL(imgFile);
   });
 }
 
