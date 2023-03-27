@@ -25,7 +25,6 @@ export const login = async (email, password) => {
 };
 
 export const logout = async () => {
-  console.log('⛔⛔⛔');
   try {
     const res = await axios({
       method: 'GET',
