@@ -16,6 +16,8 @@ router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
 
 router.get('/me', authController.protect, viewController.getAccount);
 
+router.get('/my-tours', authController.protect, viewController.getMyTours);
+
 // UPDATE USER DATA WITH API:
 // router.post(
 //   '/sumbit-user-data',

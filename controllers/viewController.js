@@ -1,6 +1,7 @@
 const Tour = require('../models/tourModel');
 const Review = require('../models/reviewModel');
 const User = require('../models/userModel');
+const Booking = require('../models/bookingModel');
 const catchAsyncError = require('../utils/catchAsyncError');
 const AppError = require('../utils/appError');
 
@@ -65,6 +66,21 @@ exports.getAccount = (req, res) => {
     title: 'Your account',
   });
 };
+
+exports.getMyTours = catchAsyncError(async (req, res, next) => {
+  // 1) Find all bookings
+  const bookings = await Booking.find({ user: req.user.id });
+  console.log(bookings);
+
+  // 2) Find tours with the returned IDs
+  const tourIDs = bookings.map((el) => el.tour);
+  const tours = await Tour.find({ _id: { $in: tourIDs } });
+
+  res.status(200).render('overview', {
+    title: 'My Tours',
+    tours,
+  });
+});
 
 // UPDATE USER DATA WITHOUT API: (implemented in account.pug)
 // exports.updateUserData = catchAsyncError(async (req, res, next) => {

@@ -6,7 +6,7 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Tour',
     required: [true, 'Booking must belong to a Tour!'],
   },
-  tour: {
+  user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: [true, 'Booking must belong to a User!'],
@@ -26,7 +26,8 @@ const bookingSchema = new mongoose.Schema({
 });
 
 bookingSchema.pre(/^find/, function (next) {
-  this.populate('user').populate({ path: tour, select: name });
+  this.populate('user').populate({ path: 'tour', select: 'name' });
+  next();
 });
 
 const Booking = mongoose.model('Booking', bookingSchema);
