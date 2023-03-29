@@ -32,8 +32,10 @@ export const logout = async () => {
     });
     // We need to do location.reload(true), because we want to reaload page without cash
     if (res.data.status === 'success') {
-      location.reload(true);
-      location.assign('/');
+      window.setTimeout(() => {
+        location.assign('/');
+        location.reload(true);
+      }, 1500);
     }
   } catch (error) {
     console.log(error.response);
