@@ -1,7 +1,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Tour = require('../models/tourModel');
+const Booking = require('../models/bookingModel');
 const catchAsyncError = require('../utils/catchAsyncError');
-const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
 exports.getCheckoutSession = catchAsyncError(async (req, res, next) => {
@@ -11,7 +11,9 @@ exports.getCheckoutSession = catchAsyncError(async (req, res, next) => {
   // 2) Create checkout session
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    success_url: `${req.protocol}://${req.get('host')}/`,
+    success_url: `${req.protocol}://${req.get('host')}/?tour=${
+      req.params.tourId
+    }&user=${req.user.id}&price=${tour.price}`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
@@ -37,4 +39,17 @@ exports.getCheckoutSession = catchAsyncError(async (req, res, next) => {
     status: 'success',
     session,
   });
+});
+
+exports.createBookingCheckout = catchAsyncError(async (req, res, next) => {
+  const { tour, user, price } = req.query;
+
+  if (!tour && !user && !price) return next();
+
+  await Booking.create({ tour, user, price });
+
+  // We want to remove tour,user and price from our url becasue then we will call next() middleware
+  // We need to do on that way becasue when we have '/' route call createBookingCheckout if first function, after that
+  // is loLoggedIn, so createBookingCheckout will be skiped if there is no query string
+  res.redirect(req.originalUrl.split('?')[0]);
 });
