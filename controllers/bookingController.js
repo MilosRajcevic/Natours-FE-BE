@@ -53,3 +53,9 @@ exports.createBookingCheckout = catchAsyncError(async (req, res, next) => {
   // is loLoggedIn, so createBookingCheckout will be skiped if there is no query string
   res.redirect(req.originalUrl.split('?')[0]);
 });
+
+exports.createBooking = factory.createOne(Booking);
+exports.getBooking = factory.getOne(Booking);
+exports.getAllBookings = factory.getAll(Booking);
+exports.updateBooking = factory.updateOne(Booking);
+exports.deleteBooking = factory.deleteOne(Booking);
