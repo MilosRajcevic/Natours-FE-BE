@@ -29,7 +29,10 @@ if (loginForm)
   });
 
 if (logoutBtn) {
-  logoutBtn.addEventListener('click', logout);
+  logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    logout();
+  });
 }
 
 if (userDataForm) {
