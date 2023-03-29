@@ -170,10 +170,10 @@ toursSchema.pre(/^find/, function (next) {
   next();
 });
 
-toursSchema.post(/^find/, function (docs, next) {
-  console.log(`Query took ${Date.now() - this.start}, milliseconds`);
-  next();
-});
+// toursSchema.post(/^find/, function (docs, next) {
+//   console.log(`Query took ${Date.now() - this.start}, milliseconds`);
+//   next();
+// });
 
 // If want to popuplate all our documents, create like query midl
 toursSchema.pre(/^find/, function (next) {
