@@ -20,6 +20,8 @@ const bookingRouter = require('./routes/bookingRoutes');
 
 const app = express();
 
+app.enable('trust proxy');
+
 app.set('view engine', 'pug');
 // Path.join
 // We don't always know whether a path that we recive from somewhere already has a slash or not.

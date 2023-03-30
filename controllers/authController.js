@@ -12,17 +12,17 @@ const signToken = (id) => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
-  const cookieOptions = {
+
+  res.cookie('jwt', token, {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-  };
+    secure: req.secure || req.header('x-forwarded-proto') === 'https', // Indicates if the cookie should be signed. It only works on HTTPS
+  });
 
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true; // Indicates if the cookie should be signed. It only works on HTTPS
-  res.cookie('jwt', token, cookieOptions);
   // Remove password from output
   user.password = undefined;
 
@@ -67,7 +67,7 @@ exports.login = catchAsyncError(async (req, res, next) => {
     return next(new AppError('Incorrcet email or password', 401));
   }
   // 3) If everything ok, send token to client
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.protect = catchAsyncError(async (req, res, next) => {
@@ -237,7 +237,7 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
   // 3) Update changedPasswordAt property for the user
 
   // 4) Log the user in, send JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 // Now remember that this password updating functionality is only for logged-in users, but still we need the user to pass in his current password, so in order to confirm that user actually is who he says he is.
@@ -258,5 +258,5 @@ exports.updatePassword = catchAsyncError(async (req, res, next) => {
   await user.save();
 
   // 4) Log user in, send JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
